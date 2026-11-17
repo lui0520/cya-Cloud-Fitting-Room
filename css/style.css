@@ -1,0 +1,241 @@
+:root {
+  --bg: #f4f3fa;
+  --text: #4a4570;
+  --accent: #9693cb;
+  --accent-soft: #eceaf8;
+  --band: #c4c2e4;
+  --stage-ratio: 58%;          /* 上方面板佔可用高度比例 */
+  --panel-overlap: 30px;       /* 上下面板重疊量（越大隔條越窄） */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--safe-top) 0 var(--safe-bottom);
+}
+
+/* =========================================================
+   Nine Slice Panel（來自 Material Maker 匯出的 web_ui/index.html）
+   frame.png：1024×1024，角落的兔子和雲朵大小固定，只有中間框線拉長
+   ========================================================= */
+.nine-slice {
+  --img: url("../img/frame.png");
+  --img-size: 1024;          /* 原圖尺寸 px */
+  --m-top: 0.13;             /* 切邊：原圖比例，同 Material Maker 節點 */
+  --m-right: 0.25;
+  --m-bottom: 0.25;
+  --m-left: 0.25;
+  --scale: 0.25;             /* 外框在螢幕上的縮放 */
+
+  /* 白色內容區在原圖中的位置（px，量測 frame.png） */
+  --in-top: 112;
+  --in-right: 116;
+  --in-left: 114;
+
+  position: relative;
+  border-style: solid;
+  border-color: transparent;
+  border-width:
+    calc(var(--m-top) * var(--img-size) * var(--scale) * 1px)
+    calc(var(--m-right) * var(--img-size) * var(--scale) * 1px)
+    calc(var(--m-bottom) * var(--img-size) * var(--scale) * 1px)
+    calc(var(--m-left) * var(--img-size) * var(--scale) * 1px);
+  border-image-source: var(--img);
+  border-image-slice:
+    calc(var(--m-top) * var(--img-size))
+    calc(var(--m-right) * var(--img-size))
+    calc(var(--m-bottom) * var(--img-size))
+    calc(var(--m-left) * var(--img-size))
+    fill;
+  border-image-repeat: stretch;
+}
+
+/* 內容區：左右上延伸到白色區域邊緣，下方停在吉祥物上面（不蓋住角落） */
+.nine-slice__content {
+  position: absolute;
+  top:    calc((var(--in-top) - var(--m-top) * var(--img-size)) * var(--scale) * 1px);
+  left:   calc((var(--in-left) - var(--m-left) * var(--img-size)) * var(--scale) * 1px);
+  right:  calc((var(--in-right) - var(--m-right) * var(--img-size)) * var(--scale) * 1px);
+  bottom: 0;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+/* 上方面板蓋在下方面板之上，吉祥物才不會被遮住；兩個面板稍微重疊讓間隔變窄 */
+.stage { flex: 0 0 var(--stage-ratio); z-index: 2; }
+.panel { flex: 1 1 auto; min-height: 0; margin-top: calc(var(--panel-overlap) * -1); z-index: 1; }
+
+/* ===== 上方 GIF 區 ===== */
+.stage__inner { display: flex; align-items: center; justify-content: center; }
+
+/* --- 待機：[虛線框] + [雲朵] --- */
+.stage__idle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4%;
+  width: 100%;
+  padding: 0 6%;
+}
+
+.dropzone {
+  flex: 0 0 38%;
+  aspect-ratio: 1;
+  border: 3px dashed var(--band);
+  border-radius: 16px;
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.dropzone.is-ready { border-color: var(--accent); }          /* 拖曳中 */
+.dropzone.is-over {                                          /* 拖到框上 */
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: scale(1.06);
+}
+
+.stage__plus {
+  flex: 0 0 auto;
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.stage__cloud {
+  flex: 0 0 38%;
+  width: 38%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  transform: scale(1.35);   /* 原圖四周留白較多，放大一點跟虛線框等大 */
+}
+
+/* --- 載入中：煙霧彈出後持續抖動 --- */
+.stage__loading {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  animation:
+    poof-in .35s cubic-bezier(.3, 1.6, .5, 1) both,
+    poof-wobble .5s ease-in-out .35s infinite;
+}
+@keyframes poof-in {
+  from { transform: scale(.3) rotate(-10deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes poof-wobble {
+  0%, 100% { transform: scale(1) rotate(0); }
+  25%      { transform: scale(1.04) rotate(-3deg); }
+  75%      { transform: scale(.97) rotate(3deg); }
+}
+
+/* --- 結果圖片 --- */
+.stage__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* 等比例縮放填滿；想裁切填滿可改成 cover */
+  animation: pop-in .3s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+@keyframes pop-in {
+  from { transform: scale(.7); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* --- 重新開始按鈕 --- */
+.restart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  padding: 6px 14px;
+  border: 2px solid var(--band);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  animation: pop-in .25s ease both;
+  transition: transform .1s ease, background .15s ease;
+}
+.restart:active { transform: scale(.94); background: var(--accent-soft); }
+
+/* 有結果圖時，拖到整個上方區域都可以換 */
+.stage.is-over .stage__inner { box-shadow: inset 0 0 0 3px var(--accent); }
+
+/* --- 拖曳中跟著手指的元素 --- */
+.drag-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  pointer-events: none;
+  padding: 12px 18px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(80, 70, 140, .25);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* ===== 下方 UI 區 ===== */
+.options {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  align-content: start;
+}
+
+.option {
+  border: 2px solid var(--band);
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 4px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  touch-action: none;       /* 讓手指拖曳不會變成捲動 */
+  transition: transform .1s ease, border-color .15s ease, background .15s ease, opacity .15s ease;
+}
+.option.is-dragging { opacity: .4; }
+.option:active { transform: scale(.95); }
+.option.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* 桌機上顯示成手機寬度 */
+@media (min-width: 520px) {
+  .app { height: min(100dvh, 860px); width: 400px; }
+  body { display: flex; align-items: center; justify-content: center; }
+}

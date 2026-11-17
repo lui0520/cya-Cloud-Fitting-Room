@@ -1,0 +1,9 @@
+{
+  "loadingMs": 1200,
+  "items":[
+    {"id":"rabbit","name": "兔子","image": "assets/rabbit.png"},
+    {"id":"vampire","name": "吸血鬼","image": "assets/vampire.png"},
+    {"id":"wolf","name": "狼","image": "assets/wolf.png"},
+	{"id":"cat","name": "貓","image": "assets/cat.png"}
+]
+}
