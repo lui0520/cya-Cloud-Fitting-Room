@@ -13,11 +13,18 @@
     <!-- 上方：顯示區（九宮格面板） -->
     <section class="nine-slice stage" id="stage">
       <div class="nine-slice__content stage__inner">
-        <!-- 待機：[虛線框] ＋ [雲朵]，把下方選項拖進虛線框 -->
+        <!-- 待機：[材料框 3 格] ＋ [雲朵]；把下方材料拖進材料框，再按「合成」 -->
         <div class="stage__idle" id="stage-idle">
-          <div class="dropzone" id="dropzone"></div>
-          <div class="stage__plus" aria-hidden="true">+</div>
-          <img class="stage__cloud" src="img/cloud.png" alt="" draggable="false" />
+          <div class="stage__row">
+            <div class="dropzone" id="dropzone">
+              <button class="slot" type="button" data-slot="0"></button>
+              <button class="slot" type="button" data-slot="1"></button>
+              <button class="slot" type="button" data-slot="2"></button>
+            </div>
+            <div class="stage__plus" aria-hidden="true">+</div>
+            <img class="stage__cloud" src="img/cloud.png" alt="" draggable="false" />
+          </div>
+          <button class="craft" id="craft" type="button" disabled>合成</button>
         </div>
 
         <!-- 載入中動畫 -->

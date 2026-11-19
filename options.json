@@ -1,9 +1,35 @@
 {
   "loadingMs": 1200,
-  "items":[
-    {"id":"rabbit","name": "兔子","image": "assets/rabbit.png"},
-    {"id":"vampire","name": "吸血鬼","image": "assets/vampire.png"},
-    {"id":"wolf","name": "狼","image": "assets/wolf.png"},
-	{"id":"cat","name": "貓","image": "assets/cat.png"}
-]
+  "materials": [
+    { "id": "rabbit",      "name": "兔子",     "icon": "icons/rabbit" },
+    { "id": "cat",         "name": "貓",       "icon": "icons/cat" },
+    { "id": "wolf",        "name": "狼",       "icon": "icons/wolf" },
+    { "id": "bear",        "name": "熊",       "icon": "icons/bear" },
+    { "id": "orca",        "name": "虎鯨",     "icon": "icons/orca" },
+    { "id": "fangs",       "name": "獠牙",     "icon": "icons/fangs" },
+    { "id": "cloak",       "name": "斗篷",     "icon": "icons/cloak" },
+    { "id": "beret",       "name": "貝雷帽",   "icon": "icons/beret" },
+    { "id": "star",        "name": "星星",     "icon": "icons/star" },
+    { "id": "tetsuu_eyes", "name": "阿澈的眼睛", "icon": "icons/tetsuu_eyes" },
+    { "id": "chestnut",    "name": "栗子",     "icon": "icons/chestnut" },
+    { "id": "corn",        "name": "玉米",     "icon": "icons/corn" }
+  ],
+  "recipes": [
+    { "materials": ["fangs", "cloak"],      "name": "吸血鬼", "image": "assets/vampire.png" },
+    { "materials": ["bear", "tetsuu_eyes"], "name": "阿澈",   "image": "assets/tetsuu.png" },
+    { "materials": ["star", "beret"],       "name": "糰子",   "image": "assets/dango.png" },
+    { "materials": ["rabbit"],              "name": "兔子",   "image": "assets/rabbit.png" },
+    { "materials": ["cat"],                 "name": "貓",     "image": "assets/cat.png" },
+    { "materials": ["wolf"],                "name": "狼",     "image": "assets/wolf.png" },
+    { "materials": ["bear"],                "name": "熊",     "image": "assets/bear.png" },
+    { "materials": ["orca"],                "name": "虎鯨",   "image": "assets/orca.png" },
+    { "materials": ["beret"],               "name": "貝雷帽", "image": "assets/beret.png" },
+    { "materials": ["corn"],                "name": "爆米花", "image": "assets/popcorn.png" },
+    {
+      "materials": ["chestnut"], "name": "栗子", "image": "assets/chestnut.png",
+      "variants": [
+        { "name": "吃栗子", "image": "assets/eat_chestnut.png", "chance": 0.3 }
+      ]
+    }
+  ]
 }

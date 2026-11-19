@@ -88,8 +88,16 @@ html, body {
 /* ===== 上方 GIF 區 ===== */
 .stage__inner { display: flex; align-items: center; justify-content: center; }
 
-/* --- 待機：[虛線框] + [雲朵] --- */
+/* --- 待機：[材料框(3格)] + [雲朵]，下方合成按鈕 --- */
 .stage__idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+}
+.stage__row {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,9 +106,13 @@ html, body {
   padding: 0 6%;
 }
 
+/* 材料框：虛線外框，裡面三個材料格 */
 .dropzone {
-  flex: 0 0 38%;
-  aspect-ratio: 1;
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
   border: 3px dashed var(--band);
   border-radius: 16px;
   transition: transform .15s ease, border-color .15s ease, background .15s ease;
@@ -110,7 +122,71 @@ html, body {
   border-style: solid;
   border-color: var(--accent);
   background: var(--accent-soft);
-  transform: scale(1.06);
+  transform: scale(1.05);
+}
+.dropzone.is-full { border-color: var(--band); }             /* 三格都滿 */
+.dropzone.is-shake { animation: shake .4s ease; }            /* 合成表沒有這個組合 */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.slot {
+  position: relative;
+  height: 40px;
+  border: 2px dashed var(--band);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 18px 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.slot:empty { padding: 0; }
+.slot .mat-icon { width: 30px; height: 30px; }
+.slot.is-filled {
+  border: 2px solid var(--accent);
+  background: var(--accent-soft);
+  cursor: pointer;
+  animation: pop-in .2s ease both;
+}
+/* 已放材料的格子右上角顯示 ×，點一下移除 */
+.slot.is-filled::after {
+  content: "×";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--accent);
+}
+
+/* 合成按鈕 */
+.craft {
+  padding: 8px 32px;
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: transform .1s ease, opacity .15s ease;
+}
+.craft:active { transform: scale(.95); }
+.craft:disabled {
+  background: #fff;
+  border-color: var(--band);
+  color: var(--band);
+  cursor: default;
 }
 
 .stage__plus {
@@ -124,6 +200,7 @@ html, body {
 .stage__cloud {
   flex: 0 0 38%;
   width: 38%;
+  min-width: 0;
   aspect-ratio: 1;
   object-fit: contain;
   transform: scale(1.35);   /* 原圖四周留白較多，放大一點跟虛線框等大 */
@@ -198,6 +275,24 @@ html, body {
   white-space: nowrap;
   box-shadow: 0 6px 16px rgba(80, 70, 140, .25);
   transform: translate(-50%, -50%) scale(1.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.drag-ghost .mat-icon { width: 48px; height: 48px; }
+
+/* --- 材料貼圖 + 名稱（下方按鈕、材料格、拖曳中共用） --- */
+.mat-icon {
+  flex: 0 0 auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+.mat-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ===== 下方 UI 區 ===== */
@@ -216,17 +311,23 @@ html, body {
   border: 2px solid var(--band);
   background: #fff;
   border-radius: 12px;
-  padding: 12px 4px;
+  padding: 8px 4px;
+  min-height: 48px;
   cursor: pointer;
   font: inherit;
   font-size: 14px;
   color: var(--text);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   touch-action: none;       /* 讓手指拖曳不會變成捲動 */
   transition: transform .1s ease, border-color .15s ease, background .15s ease, opacity .15s ease;
 }
+.option .mat-icon { width: 52px; height: 52px; }
+.option .mat-name { max-width: 100%; }
 .option.is-dragging { opacity: .4; }
 .option:active { transform: scale(.95); }
 .option.is-active {
